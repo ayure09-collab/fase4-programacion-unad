@@ -6,178 +6,431 @@ from servicios import (
 )
 from reservas import Reserva
 
-
-print("===== SOFTWARE FJ =====\n")
-
-# ==============================
-# OPERACIÓN 1
-# Cliente válido
-# ==============================
-
-try:
-
-    cliente1 = Cliente(
-        "Gabriel Ayure",
-        "gabriel@gmail.com",
-        "3001234567"
-    )
-
-    cliente1.mostrar_info()
-
-except Exception as e:
-    print(e)
-
-
-# ==============================
-# OPERACIÓN 2
-# Cliente inválido
-# ==============================
-
-try:
-
-    cliente2 = Cliente(
-        "Carlos",
-        "correo_invalido",
-        "1234567"
-    )
-
-except Exception as e:
-
-    with open("logs.txt", "a", encoding="utf-8") as log:
-        log.write(f"ERROR CLIENTE: {str(e)}\n")
-
-    print(f"Error detectado: {e}\n")
-
-
-# ==============================
-# OPERACIÓN 3
-# Servicio válido
-# ==============================
-
-try:
-
-    servicio1 = ReservaSala(
-        "Sala VIP",
-        100
-    )
-
-    print(servicio1.descripcion())
-
-except Exception as e:
-    print(e)
-
-
-# ==============================
-# OPERACIÓN 4
-# Servicio inválido
-# ==============================
-
-try:
-
-    servicio2 = AlquilerEquipo(
-        "Laptop",
-        -50
-    )
-
-except Exception as e:
-
-    with open("logs.txt", "a", encoding="utf-8") as log:
-        log.write(f"ERROR SERVICIO: {str(e)}\n")
-
-    print(f"Error detectado: {e}\n")
-
-
-# ==============================
-# OPERACIÓN 5
-# Reserva exitosa
-# ==============================
-
-reserva1 = Reserva(
-    cliente1,
-    servicio1,
-    3
+from utilidades import (
+    limpiar_pantalla,
+    pausar,
+    menu_principal,
+    mostrar_logs
 )
 
-reserva1.confirmar()
+
+# ===================================
+# LISTAS DEL SISTEMA
+# ===================================
+
+clientes = []
+servicios = []
+reservas = []
+
+operaciones = 0
 
 
-# ==============================
-# OPERACIÓN 6
-# Reserva fallida
-# ==============================
+# ===================================
+# INICIO DEL SISTEMA
+# ===================================
 
-reserva2 = Reserva(
-    cliente1,
-    servicio1,
-    -5
-)
+while True:
 
-reserva2.confirmar()
+    limpiar_pantalla()
 
+    menu_principal()
 
-# ==============================
-# OPERACIÓN 7
-# Asesoría especializada
-# ==============================
-
-try:
-
-    servicio3 = AsesoriaEspecializada(
-        "Asesoría Python",
-        200
+    opcion = input(
+        "\nSeleccione una opción: "
     )
 
-    costo = servicio3.calcular_costo(
-        5,
-        0.10
-    )
+    # ===================================
+    # REGISTRAR CLIENTE
+    # ===================================
 
-    print(
-        f"Costo con descuento: ${costo}\n"
-    )
+    if opcion == "1":
 
-except Exception as e:
-    print(e)
+        try:
 
+            print("\n===== REGISTRO CLIENTE =====")
 
-# ==============================
-# OPERACIÓN 8
-# Cancelación válida
-# ==============================
+            nombre = input(
+                "Ingrese nombre: "
+            )
 
-reserva1.cancelar()
+            correo = input(
+                "Ingrese correo: "
+            )
 
+            telefono = input(
+                "Ingrese teléfono: "
+            )
 
-# ==============================
-# OPERACIÓN 9
-# Cancelación repetida
-# ==============================
+            cliente = Cliente(
+                nombre,
+                correo,
+                telefono
+            )
 
-reserva1.cancelar()
+            clientes.append(cliente)
 
+            operaciones += 1
 
-# ==============================
-# OPERACIÓN 10
-# Error de cálculo
-# ==============================
+            print(
+                "\nCliente registrado correctamente"
+            )
 
-try:
+            cliente.mostrar_info()
 
-    servicio4 = ReservaSala(
-        "Sala Ejecutiva",
-        120
-    )
+        except Exception as error:
 
-    print(
-        servicio4.calcular_costo(0)
-    )
+            operaciones += 1
 
-except Exception as e:
+            print(f"\nError: {error}")
 
-    with open("logs.txt", "a", encoding="utf-8") as log:
-        log.write(f"ERROR CÁLCULO: {str(e)}\n")
+        pausar()
 
-    print(f"Error detectado: {e}\n")
+    # ===================================
+    # CREAR SERVICIO
+    # ===================================
 
+    elif opcion == "2":
 
-print("===== FIN DEL SISTEMA =====")
+        try:
+
+            print("\n===== CREAR SERVICIO =====")
+
+            print("1. Reserva Sala")
+            print("2. Alquiler Equipo")
+            print("3. Asesoría")
+
+            tipo = input(
+                "\nSeleccione servicio: "
+            )
+
+            nombre = input(
+                "Nombre del servicio: "
+            )
+
+            precio = float(
+                input("Precio base: ")
+            )
+
+            # RESERVA SALA
+            if tipo == "1":
+
+                horas = int(
+                    input("Horas: ")
+                )
+
+                servicio = ReservaSala(
+                    nombre,
+                    precio,
+                    horas
+                )
+
+            # ALQUILER EQUIPO
+            elif tipo == "2":
+
+                dias = int(
+                    input("Días: ")
+                )
+
+                servicio = AlquilerEquipo(
+                    nombre,
+                    precio,
+                    dias
+                )
+
+            # ASESORÍA
+            elif tipo == "3":
+
+                horas = int(
+                    input("Horas: ")
+                )
+
+                servicio = (
+                    AsesoriaEspecializada(
+                        nombre,
+                        precio,
+                        horas
+                    )
+                )
+
+            else:
+
+                raise ValueError(
+                    "Opción inválida"
+                )
+
+            servicios.append(servicio)
+
+            operaciones += 1
+
+            print(
+                "\nServicio creado correctamente"
+            )
+
+            servicio.mostrar_info()
+
+        except Exception as error:
+
+            operaciones += 1
+
+            print(f"\nError: {error}")
+
+        pausar()
+
+    # ===================================
+    # CREAR RESERVA
+    # ===================================
+
+    elif opcion == "3":
+
+        try:
+
+            if len(clientes) == 0:
+                raise Exception(
+                    "No hay clientes registrados"
+                )
+
+            if len(servicios) == 0:
+                raise Exception(
+                    "No hay servicios registrados"
+                )
+
+            print("\n===== CREAR RESERVA =====")
+
+            # MOSTRAR CLIENTES
+            print("\nCLIENTES:")
+
+            for i, cliente in enumerate(clientes):
+
+                print(
+                    f"{i + 1}. "
+                    f"{cliente.get_nombre()}"
+                )
+
+            cliente_index = int(
+                input(
+                    "\nSeleccione cliente: "
+                )
+            ) - 1
+
+            # MOSTRAR SERVICIOS
+            print("\nSERVICIOS:")
+
+            for i, servicio in enumerate(servicios):
+
+                print(
+                    f"{i + 1}. "
+                    f"{servicio.descripcion()}"
+                )
+
+            servicio_index = int(
+                input(
+                    "\nSeleccione servicio: "
+                )
+            ) - 1
+
+            duracion = int(
+                input(
+                    "Duración real: "
+                )
+            )
+
+            reserva = Reserva(
+                clientes[cliente_index],
+                servicios[servicio_index],
+                duracion
+            )
+
+            reservas.append(reserva)
+
+            operaciones += 1
+
+            print(
+                "\nReserva creada correctamente"
+            )
+
+            reserva.mostrar_reserva()
+
+        except Exception as error:
+
+            operaciones += 1
+
+            print(f"\nError: {error}")
+
+        pausar()
+
+    # ===================================
+    # VER RESERVAS
+    # ===================================
+
+    elif opcion == "4":
+
+        print("\n===== RESERVAS =====")
+
+        if len(reservas) == 0:
+
+            print(
+                "\nNo existen reservas"
+            )
+
+        else:
+
+            for i, reserva in enumerate(reservas):
+
+                print(
+                    f"\nRESERVA #{i + 1}"
+                )
+
+                reserva.mostrar_reserva()
+
+        pausar()
+
+    # ===================================
+    # CONFIRMAR RESERVA
+    # ===================================
+
+    elif opcion == "5":
+
+        try:
+
+            if len(reservas) == 0:
+                raise Exception(
+                    "No existen reservas"
+                )
+
+            print("\n===== CONFIRMAR =====")
+
+            for i, reserva in enumerate(reservas):
+
+                print(
+                    f"{i + 1}. "
+                    f"{reserva.cliente.get_nombre()}"
+                )
+
+            indice = int(
+                input(
+                    "\nSeleccione reserva: "
+                )
+            ) - 1
+
+            reservas[indice].confirmar()
+
+            operaciones += 1
+
+        except Exception as error:
+
+            operaciones += 1
+
+            print(f"\nError: {error}")
+
+        pausar()
+
+    # ===================================
+    # CANCELAR RESERVA
+    # ===================================
+
+    elif opcion == "6":
+
+        try:
+
+            if len(reservas) == 0:
+                raise Exception(
+                    "No existen reservas"
+                )
+
+            print("\n===== CANCELAR =====")
+
+            for i, reserva in enumerate(reservas):
+
+                print(
+                    f"{i + 1}. "
+                    f"{reserva.cliente.get_nombre()}"
+                )
+
+            indice = int(
+                input(
+                    "\nSeleccione reserva: "
+                )
+            ) - 1
+
+            reservas[indice].cancelar()
+
+            operaciones += 1
+
+        except Exception as error:
+
+            operaciones += 1
+
+            print(f"\nError: {error}")
+
+        pausar()
+
+    # ===================================
+    # PROCESAR RESERVA
+    # ===================================
+
+    elif opcion == "7":
+
+        try:
+
+            if len(reservas) == 0:
+                raise Exception(
+                    "No existen reservas"
+                )
+
+            print("\n===== PROCESAR =====")
+
+            for i, reserva in enumerate(reservas):
+
+                print(
+                    f"{i + 1}. "
+                    f"{reserva.cliente.get_nombre()}"
+                )
+
+            indice = int(
+                input(
+                    "\nSeleccione reserva: "
+                )
+            ) - 1
+
+            reservas[indice].procesar()
+
+            operaciones += 1
+
+        except Exception as error:
+
+            operaciones += 1
+
+            print(f"\nError: {error}")
+
+        pausar()
+
+    # ===================================
+    # VER LOGS
+    # ===================================
+
+    elif opcion == "8":
+
+        mostrar_logs()
+
+        pausar()
+
+    # ===================================
+    # SALIR
+    # ===================================
+
+    elif opcion == "9":
+
+        print("\n===== FIN DEL SISTEMA =====")
+
+        print(
+            f"\nOperaciones realizadas: "
+            f"{operaciones}"
+        )
+
+        break
+
+    else:
+
+        print("\nOpción inválida")
+
+        pausar()
