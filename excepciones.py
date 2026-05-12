@@ -1,13 +1,13 @@
-class ClienteInvalido(Exception):
-    """Excepción para clientes inválidos"""
+class ClienteError(Exception):
+    """Excepción personalizada para clientes"""
     pass
 
 
-class ServicioNoDisponible(Exception):
-    """Excepción para servicios inválidos"""
+class ServicioError(Exception):
+    """Excepción personalizada para servicios"""
     pass
 
 
 class ReservaError(Exception):
-    """Excepción general para reservas"""
+    """Excepción personalizada para reservas"""
     pass
